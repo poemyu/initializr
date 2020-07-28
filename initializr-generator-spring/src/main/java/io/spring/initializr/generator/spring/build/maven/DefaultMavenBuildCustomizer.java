@@ -47,6 +47,7 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 		build.settings().name(this.description.getName()).description(this.description.getDescription());
 		build.properties().property("java.version", this.description.getLanguage().jvmVersion());
 		build.plugins().add("org.springframework.boot", "spring-boot-maven-plugin");
+		build.plugins().add("org.mybatis.generator", "mybatis-generator-maven-plugin");
 
 		Maven maven = this.metadata.getConfiguration().getEnv().getMaven();
 		String springBootVersion = this.description.getPlatformVersion().toString();

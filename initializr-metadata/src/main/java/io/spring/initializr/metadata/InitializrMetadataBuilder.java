@@ -130,7 +130,7 @@ public final class InitializrMetadataBuilder {
 			metadata.getDescription().setContent("Demo project for Spring Boot");
 		}
 		if (!StringUtils.hasText(metadata.getGroupId().getContent())) {
-			metadata.getGroupId().setContent("com.example");
+			metadata.getGroupId().setContent("com.croot");
 		}
 		if (!StringUtils.hasText(metadata.getVersion().getContent())) {
 			metadata.getVersion().setContent("0.0.1-SNAPSHOT");

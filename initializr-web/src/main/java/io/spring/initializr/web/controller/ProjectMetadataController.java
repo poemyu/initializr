@@ -21,21 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
-import io.spring.initializr.generator.version.Version;
-import io.spring.initializr.metadata.DependencyMetadata;
-import io.spring.initializr.metadata.DependencyMetadataProvider;
-import io.spring.initializr.metadata.InitializrConfiguration.Platform;
-import io.spring.initializr.metadata.InitializrMetadata;
-import io.spring.initializr.metadata.InitializrMetadataProvider;
-import io.spring.initializr.metadata.InvalidInitializrMetadataException;
-import io.spring.initializr.web.mapper.DependencyMetadataV21JsonMapper;
-import io.spring.initializr.web.mapper.InitializrMetadataJsonMapper;
-import io.spring.initializr.web.mapper.InitializrMetadataV21JsonMapper;
-import io.spring.initializr.web.mapper.InitializrMetadataV22JsonMapper;
-import io.spring.initializr.web.mapper.InitializrMetadataV2JsonMapper;
-import io.spring.initializr.web.mapper.InitializrMetadataVersion;
-import io.spring.initializr.web.project.InvalidProjectRequestException;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,6 +31,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import io.spring.initializr.generator.version.Version;
+import io.spring.initializr.metadata.DependencyMetadata;
+import io.spring.initializr.metadata.DependencyMetadataProvider;
+import io.spring.initializr.metadata.InitializrConfiguration.Platform;
+import io.spring.initializr.metadata.InitializrMetadata;
+import io.spring.initializr.metadata.InitializrMetadataProvider;
+import io.spring.initializr.metadata.InitializrProperties;
+import io.spring.initializr.metadata.InvalidInitializrMetadataException;
+import io.spring.initializr.web.mapper.DependencyMetadataV21JsonMapper;
+import io.spring.initializr.web.mapper.InitializrMetadataJsonMapper;
+import io.spring.initializr.web.mapper.InitializrMetadataV21JsonMapper;
+import io.spring.initializr.web.mapper.InitializrMetadataV22JsonMapper;
+import io.spring.initializr.web.mapper.InitializrMetadataV2JsonMapper;
+import io.spring.initializr.web.mapper.InitializrMetadataVersion;
+import io.spring.initializr.web.project.InvalidProjectRequestException;
 
 /**
  * {@link Controller} that exposes metadata and service configuration.
@@ -60,6 +62,9 @@ public class ProjectMetadataController extends AbstractMetadataController {
 	public static final MediaType HAL_JSON_CONTENT_TYPE = MediaType.parseMediaType("application/hal+json");
 
 	private final DependencyMetadataProvider dependencyMetadataProvider;
+
+	@Autowired
+	private InitializrProperties properties;
 
 	public ProjectMetadataController(InitializrMetadataProvider metadataProvider,
 			DependencyMetadataProvider dependencyMetadataProvider) {
@@ -144,6 +149,7 @@ public class ProjectMetadataController extends AbstractMetadataController {
 	private ResponseEntity<String> serviceCapabilitiesFor(InitializrMetadataVersion version, MediaType contentType) {
 		String appUrl = generateAppUrl();
 		InitializrMetadata metadata = this.metadataProvider.get();
+		metadata.getBootVersions().setContent(this.properties.getBootVersions());
 		String content = getJsonMapper(version).write(metadata, appUrl);
 		return ResponseEntity.ok().contentType(contentType).eTag(createUniqueId(content)).varyBy("Accept")
 				.cacheControl(determineCacheControlFor(metadata)).body(content);

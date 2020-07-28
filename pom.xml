@@ -136,6 +136,7 @@
 									<suppressionsLocation>src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 									<includeTestSourceDirectory>true</includeTestSourceDirectory>
 									<propertyExpansion>main.basedir=${main.basedir}</propertyExpansion>
+									<excludes>**/BuildSystem.java,**/Dependency.java,**/InitializrConfiguration.java,**/MainSourceCodeProjectContributor.java,**/FileTemplateUtil.java,**/ProjectMetadataController.java,**/ProjectGenerationInvoker.java</excludes>
 								</configuration>
 								<goals>
 									<goal>check</goal>
@@ -152,7 +153,7 @@
 									<encoding>UTF-8</encoding>
 									<sourceDirectories>${basedir}</sourceDirectories>
 									<includes>**/*</includes>
-									<excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class</excludes>
+									<excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class,**/generatorConfig.xml,**/generatorConfigTk.xml,**/mybatisGeneratorinit.properties</excludes>
 								</configuration>
 								<goals>
 									<goal>check</goal>

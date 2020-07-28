@@ -17,20 +17,27 @@
 package io.spring.initializr.generator.spring.code;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import io.spring.initializr.generator.language.Annotation;
 import io.spring.initializr.generator.language.CompilationUnit;
 import io.spring.initializr.generator.language.SourceCode;
 import io.spring.initializr.generator.language.SourceCodeWriter;
 import io.spring.initializr.generator.language.TypeDeclaration;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.generator.spring.util.FileTemplateUtil;
 import io.spring.initializr.generator.spring.util.LambdaSafe;
-
-import org.springframework.beans.factory.ObjectProvider;
 
 /**
  * {@link ProjectContributor} for the application's main source code.
@@ -74,12 +81,46 @@ public class MainSourceCodeProjectContributor<T extends TypeDeclaration, C exten
 		String applicationName = this.description.getApplicationName();
 		C compilationUnit = sourceCode.createCompilationUnit(this.description.getPackageName(), applicationName);
 		T mainApplicationType = compilationUnit.createTypeDeclaration(applicationName);
+		mainApplicationType.annotate(this.addCustomAnnotation(this.description.getPackageName()));
 		customizeMainApplicationType(mainApplicationType);
 		customizeMainCompilationUnit(compilationUnit);
 		customizeMainSourceCode(sourceCode);
 		this.sourceWriter.writeTo(
 				this.description.getBuildSystem().getMainSource(projectRoot, this.description.getLanguage()),
 				sourceCode);
+
+		List<Path> paths = this.description.getBuildSystem().getPathDirectory(projectRoot,
+				this.description.getLanguage(), this.description.getPackageName());
+		for (Path directory : paths) {
+			if (!Files.exists(directory)) {
+				Files.createDirectories(directory);
+			}
+		}
+
+		Map<String, Path> map = this.description.getBuildSystem().getFileDirectory(projectRoot,
+				this.description.getLanguage(), this.description.getPackageName());
+
+		for (Map.Entry<String, Path> entry : map.entrySet()) {
+			String resourcePattern = entry.getKey();
+			Path output = entry.getValue();
+			if (!Files.exists(output)) {
+				Files.createDirectories(output.getParent());
+				Files.createFile(output);
+			}
+			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+			Resource resource = resolver.getResource(resourcePattern);
+			FileTemplateUtil.copy(resource.getInputStream(), Files.newOutputStream(output, StandardOpenOption.APPEND),
+					this.description.getPackageName());
+			// try (InputStream inputStream = resource.getInputStream()) {
+			// Files.copy(inputStream, output, StandardCopyOption.REPLACE_EXISTING);
+			// }
+
+		}
+	}
+
+	private Annotation addCustomAnnotation(String packageName) {
+		return Annotation.name("tk.mybatis.spring.annotation.MapperScan", (builder) -> builder.attribute("basePackages",
+				String[].class, "\"" + packageName + ".dao\"", "\"" + packageName + ".dao.**\""));
 	}
 
 	@SuppressWarnings("unchecked")

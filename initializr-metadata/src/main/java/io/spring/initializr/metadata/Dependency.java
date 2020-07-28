@@ -22,15 +22,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import io.spring.initializr.generator.version.InvalidVersionException;
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.generator.version.VersionParser;
 import io.spring.initializr.generator.version.VersionRange;
-
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * Meta-data for a dependency. Each dependency has a primary identifier and an arbitrary
@@ -202,8 +203,8 @@ public class Dependency extends MetadataElement implements Describable {
 	}
 
 	private Dependency asSpringBootStarter(String name) {
-		this.groupId = "org.springframework.boot";
-		this.artifactId = (StringUtils.hasText(name) ? "spring-boot-starter-" + name : "spring-boot-starter");
+		this.groupId = "com.croot";
+		this.artifactId = (StringUtils.hasText(name) ? "spring-boot-starter-" + name : "croot_framework_starter");
 		if (StringUtils.hasText(name)) {
 			setId(name);
 		}

@@ -17,12 +17,16 @@
 package io.spring.initializr.generator.buildsystem;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import io.spring.initializr.generator.language.Language;
 import io.spring.initializr.generator.language.SourceStructure;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**
  * A build system that can be used by a generated project.
@@ -64,6 +68,52 @@ public interface BuildSystem {
 	 */
 	default SourceStructure getTestSource(Path projectRoot, Language language) {
 		return new SourceStructure(projectRoot.resolve("src/test/"), language);
+	}
+
+	default List<Path> getPathDirectory(Path projectRoot, Language language, String packageName) {
+		List<Path> paths = new ArrayList<>();
+		packageName = "/" + packageName.replaceAll("\\.", "\\/");
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/comm/config"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/controller"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/entity"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/dao"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/repository"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/service"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/global"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/global/cache"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/global/constant"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/global/enums"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/rest/request"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/rest/response"));
+		paths.add(projectRoot.resolve("src/main/" + language.id() + packageName + "/utils"));
+		paths.add(projectRoot.resolve("src/main/resources/mappers"));
+
+		return paths;
+	}
+
+	default Map<String, Path> getFileDirectory(Path projectRoot, Language language, String packageName) {
+		packageName = "/" + packageName.replaceAll("\\.", "\\/");
+		HashMap<String, Path> m = new HashMap<>();
+
+		m.put("classpath:configuration/RespCode.java",
+				projectRoot.resolve("src/main/" + language.id() + packageName + "/comm/RespCode.java"));
+
+		m.put("classpath:configuration/generatorConfig.xml",
+				projectRoot.resolve("src/main/resources/generatorConfig.xml"));
+
+		m.put("classpath:configuration/generatorConfigTk.xml",
+				projectRoot.resolve("src/main/resources/generatorConfigTk.xml"));
+
+		m.put("classpath:configuration/Logback.xml", projectRoot.resolve("src/main/resources/Logback.xml"));
+
+		m.put("classpath:configuration/mybatisGeneratorinit.properties",
+				projectRoot.resolve("src/main/resources/mybatisGeneratorinit.properties"));
+
+		// m.put("classpath:configuration/Generator.java",
+		// projectRoot.resolve("src/test/" + language.id() + packageName +
+		// "/Generator.java"));
+
+		return m;
 	}
 
 	static BuildSystem forId(String id) {

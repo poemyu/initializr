@@ -27,15 +27,16 @@ import java.util.Map;
 
 import javax.lang.model.SourceVersion;
 
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.spring.initializr.generator.version.InvalidVersionException;
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.generator.version.Version.Format;
 import io.spring.initializr.generator.version.VersionParser;
 import io.spring.initializr.generator.version.VersionRange;
-
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.util.StringUtils;
 
 /**
  * Various configuration options used by the service.
@@ -514,9 +515,9 @@ public class InitializrConfiguration {
 		 */
 		public static class Maven {
 
-			private static final String DEFAULT_PARENT_GROUP_ID = "org.springframework.boot";
+			private static final String DEFAULT_PARENT_GROUP_ID = "com.croot";
 
-			private static final String DEFAULT_PARENT_ARTIFACT_ID = "spring-boot-starter-parent";
+			private static final String DEFAULT_PARENT_ARTIFACT_ID = "croot_common_dependencies";
 
 			/**
 			 * Custom parent pom to use for generated projects.

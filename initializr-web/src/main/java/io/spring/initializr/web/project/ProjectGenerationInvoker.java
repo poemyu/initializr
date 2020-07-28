@@ -24,6 +24,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.util.FileSystemUtils;
+
 import io.spring.initializr.generator.buildsystem.BuildItemResolver;
 import io.spring.initializr.generator.buildsystem.BuildWriter;
 import io.spring.initializr.generator.project.DefaultProjectAssetGenerator;
@@ -35,11 +40,6 @@ import io.spring.initializr.generator.project.ProjectGenerator;
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
 import io.spring.initializr.metadata.support.MetadataBuildItemResolver;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.util.FileSystemUtils;
 
 /**
  * Invokes the project generation API. This is an intermediate layer that can consume a
@@ -77,6 +77,7 @@ public class ProjectGenerationInvoker<R extends ProjectRequest> {
 	 * @return the {@link ProjectGenerationResult}
 	 */
 	public ProjectGenerationResult invokeProjectStructureGeneration(R request) {
+		request.setBootVersion(request.getBootVersion().replace(".BUILD", ""));
 		InitializrMetadata metadata = this.parentApplicationContext.getBean(InitializrMetadataProvider.class).get();
 		try {
 			ProjectDescription description = this.requestConverter.convert(request, metadata);
