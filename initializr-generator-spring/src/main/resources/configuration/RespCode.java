@@ -1,6 +1,6 @@
 package com.croot.demo.comm;
 
-import com.croot.framework.comm.IResponse;
+import com.croot.common.response.IResponse;
 
 /**
  * 返回状态枚举类

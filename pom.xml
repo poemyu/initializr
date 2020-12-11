@@ -73,6 +73,41 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											io.spring.javaformat
+										</groupId>
+										<artifactId>
+											spring-javaformat-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.0.23,)
+										</versionRange>
+										<goals>
+											<goal>validate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
@@ -136,7 +171,7 @@
 									<suppressionsLocation>src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
 									<includeTestSourceDirectory>true</includeTestSourceDirectory>
 									<propertyExpansion>main.basedir=${main.basedir}</propertyExpansion>
-									<excludes>**/BuildSystem.java,**/Dependency.java,**/InitializrConfiguration.java,**/MainSourceCodeProjectContributor.java,**/FileTemplateUtil.java,**/ProjectMetadataController.java,**/ProjectGenerationInvoker.java</excludes>
+									<excludes>**/BuildSystem.java,**/Dependency.java,**/InitializrConfiguration.java,**/MainSourceCodeProjectContributor.java,**/FileTemplateUtil.java,**/ProjectMetadataController.java,**/ProjectGenerationInvoker.java,**/SpringBootMetadataReader.java</excludes>
 								</configuration>
 								<goals>
 									<goal>check</goal>
